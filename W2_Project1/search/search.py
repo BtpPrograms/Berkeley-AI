@@ -87,7 +87,49 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    directions = {'North':Directions.NORTH, 'East':Directions.EAST, 'South':Directions.SOUTH, 'West':Directions.WEST}
+    usedList = util.Counter()
+    fringe = util.Stack()
+    path = util.Stack()
+    print "Start:", problem.getStartState()
+    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    
+    if problem.isGoalState(problem.getStartState()):
+        return problem.getStartState()
+    else:
+        fringe.push(problem.getStartState())
+        while not fringe.isEmpty():
+            currentNode = fringe.peek()
+            usedList[fringe.peek()] = 1
+            print "Current Node = ", currentNode 
+            print problem.getSuccessors(currentNode) 
+
+            branch = 0 
+            while usedList[problem.getSuccessors(currentNode)[branch][0]] != 0 and branch < (len(problem.getSuccessors(currentNode)) - 1):
+                branch += 1
+            currentDirection = problem.getSuccessors(currentNode)[branch][1]
+            currentNode = problem.getSuccessors(currentNode)[branch][0]
+
+            if usedList[currentNode] != 0:
+                fringe.pop()
+                print "Backtracking", Directions.REVERSE[path.pop()]
+            else:
+                path.push(directions[currentDirection])
+                if problem.isGoalState(currentNode):
+                    print "GOAL FOUND AT", currentNode
+                    print "Path taken", path
+                    return path.list 
+                usedList[currentNode] = 1
+                fringe.push(currentNode)
+                print "Going", currentDirection, "to", currentNode
+            print "#############################################################"
+
+             
+            
+
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""

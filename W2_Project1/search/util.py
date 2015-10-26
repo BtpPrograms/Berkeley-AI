@@ -130,6 +130,20 @@ class Stack:
         "Pop the most recently pushed item from the stack"
         return self.list.pop()
 
+    def peek(self):
+        "Returns the item at the top of the stack"
+        item = self.list.pop()
+        self.list.append(item)
+        return item
+
+    def __str__(self):
+        "tempString = "[" + self.list[0]
+        for i in range(1, len(self.list)):
+            tempString += (", " + self.list[i])
+        tempString += "]"
+        return tempString"
+        return path.list
+
     def isEmpty(self):
         "Returns true if the stack is empty"
         return len(self.list) == 0
@@ -149,6 +163,13 @@ class Queue:
           operation removes the item from the queue.
         """
         return self.list.pop()
+
+    def __str__(self):
+        tempString = "[" + self.list[0]
+        for i in range(1, len(self.list)):
+            tempString += (", " + self.list[i])
+        tempString += "]"
+        return tempString
 
     def isEmpty(self):
         "Returns true if the queue is empty"
