@@ -86,54 +86,43 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
     from game import Directions
-    directions = {'North':Directions.NORTH, 'East':Directions.EAST, 'South':Directions.SOUTH, 'West':Directions.WEST}
     usedList = util.Counter()
     fringe = util.Stack()
     path = util.Stack()
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
     
+    # First checks to see if the initial state is a goal state. If it is, return that state
     if problem.isGoalState(problem.getStartState()):
         return problem.getStartState()
+    # If the initial state is not a goal state, begin iterating through the tree
     else:
         fringe.push(problem.getStartState())
         while not fringe.isEmpty():
             currentNode = fringe.peek()
-            usedList[fringe.peek()] = 1
-            print "Current Node = ", currentNode 
-            print problem.getSuccessors(currentNode) 
+            usedList[currentNode] = 1
 
+            # Selects the next available branch and the direction used to reach that branch
             branch = 0 
             while usedList[problem.getSuccessors(currentNode)[branch][0]] != 0 and branch < (len(problem.getSuccessors(currentNode)) - 1):
                 branch += 1
             currentDirection = problem.getSuccessors(currentNode)[branch][1]
             currentNode = problem.getSuccessors(currentNode)[branch][0]
 
+            # Backtracks through the fringe if all branches have already been selected
             if usedList[currentNode] != 0:
                 fringe.pop()
-                print "Backtracking", Directions.REVERSE[path.pop()]
+                path.pop()
+            # If the branch is unused, save the direction and push it onto the fringe.
+            # Return the path if this branch is a goal state
             else:
-                path.push(directions[currentDirection])
+                path.push(currentDirection)
                 if problem.isGoalState(currentNode):
-                    print "GOAL FOUND AT", currentNode
-                    print "Path taken", path
                     return path.list 
                 usedList[currentNode] = 1
                 fringe.push(currentNode)
-                print "Going", currentDirection, "to", currentNode
-            print "#############################################################"
-
-             
-            
-
-    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):

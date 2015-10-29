@@ -137,12 +137,10 @@ class Stack:
         return item
 
     def __str__(self):
-        "tempString = "[" + self.list[0]
-        for i in range(1, len(self.list)):
-            tempString += (", " + self.list[i])
-        tempString += "]"
-        return tempString"
-        return path.list
+        return str(self.list)
+    
+    def __len__(self):
+        return len(self.list)
 
     def isEmpty(self):
         "Returns true if the stack is empty"
@@ -164,12 +162,17 @@ class Queue:
         """
         return self.list.pop()
 
+    def peek(self):
+        "Returns the item at the top of the stack"
+        item = self.list.pop()
+        self.list.append(item)
+        return item
+
     def __str__(self):
-        tempString = "[" + self.list[0]
-        for i in range(1, len(self.list)):
-            tempString += (", " + self.list[i])
-        tempString += "]"
-        return tempString
+        return str(self.list)
+
+    def __len__(self):
+        return len(self.list)
 
     def isEmpty(self):
         "Returns true if the queue is empty"
