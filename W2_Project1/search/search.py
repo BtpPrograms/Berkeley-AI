@@ -123,8 +123,42 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    util.raiseNotDefined()
+    from game import Directions
+    usedList = util.Counter()
+    fringe = util.Queue()
+    path = util.Stack()
+    
+    # First checks to see if the initial state is a goal state. If it is, return that state
+    if problem.isGoalState(problem.getStartState()):
+        return problem.getStartState()
+    # If the initial state is not a goal state, begin iterating through the tree
+    else:
+        fringe.push(problem.getStartState())
+        while not fringe.isEmpty():
+            currentNode = fringe.peek()
+            print currentNode
+            usedList[currentNode] = 1
 
+            print "FRINGE", fringe
+
+            while usedList[fringe.peek]
+            ### currentDirection = problem.getSuccessors(currentNode)[branch][1]
+            currentNode = problem.getSuccessors(currentNode)[branch][0]
+
+            if usedList[currentNode] != 0:
+                print "Removing", fringe.peek()
+                successors = problem.getSuccessors(fringe.pop())
+                for successor in successors:
+                    print "Adding", successor
+                    usedList[successor] = 1
+                    fringe.push(successor)
+            # If the branch is unused, save the direction and push it onto the fringe.
+            # Return the path if this branch is a goal state
+            else:
+                ### path.push(currentDirection)
+                print "NODE UNUSED", currentNode
+                if problem.isGoalState(currentNode):
+                    return path.list 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
