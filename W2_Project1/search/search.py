@@ -134,31 +134,23 @@ def breadthFirstSearch(problem):
     # If the initial state is not a goal state, begin iterating through the tree
     else:
         fringe.push(problem.getStartState())
+        usedList[fringe.peek()] = 1
         while not fringe.isEmpty():
-            currentNode = fringe.peek()
-            print currentNode
-            usedList[currentNode] = 1
-
             print "FRINGE", fringe
+            print "USED", usedList
 
-            while usedList[fringe.peek]
-            ### currentDirection = problem.getSuccessors(currentNode)[branch][1]
-            currentNode = problem.getSuccessors(currentNode)[branch][0]
+            tempNode = fringe.pop()
+            print "Removing", tempNode
+            successors = problem.getSuccessors(tempNode)
+            for successor in successors:
+                if usedList[successor[0]] == 0:
+                    print "Adding", successor[0]
+                    usedList[successor[0]] = 1
+                    fringe.push(successor[0])
+                    if problem.isGoalState(successor[0]):
+                            print "Found goal at", successor[0]
+                            return path.list
 
-            if usedList[currentNode] != 0:
-                print "Removing", fringe.peek()
-                successors = problem.getSuccessors(fringe.pop())
-                for successor in successors:
-                    print "Adding", successor
-                    usedList[successor] = 1
-                    fringe.push(successor)
-            # If the branch is unused, save the direction and push it onto the fringe.
-            # Return the path if this branch is a goal state
-            else:
-                ### path.push(currentDirection)
-                print "NODE UNUSED", currentNode
-                if problem.isGoalState(currentNode):
-                    return path.list 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
