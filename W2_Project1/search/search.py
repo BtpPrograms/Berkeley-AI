@@ -91,6 +91,11 @@ def depthFirstSearch(problem):
     fringe = util.Stack()
     path = util.Stack()
     
+
+    print "Start:", problem.getStartState()
+    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
+
     # First checks to see if the initial state is a goal state. If it is, return that state
     if problem.isGoalState(problem.getStartState()):
         return problem.getStartState()
@@ -99,14 +104,22 @@ def depthFirstSearch(problem):
         fringe.push(problem.getStartState())
         while not fringe.isEmpty():
             currentNode = fringe.peek()
+            successors = problem.getSuccessors(currentNode)
             usedList[currentNode] = 1
 
+            #print "Current Node", currentNode
+            #print "Successors", problem.getSuccessors(currentNode)
+
             # Selects the next available branch and the direction used to reach that branch
-            branch = 0 
-            while usedList[problem.getSuccessors(currentNode)[branch][0]] != 0 and branch < (len(problem.getSuccessors(currentNode)) - 1):
-                branch += 1
-            currentDirection = problem.getSuccessors(currentNode)[branch][1]
-            currentNode = problem.getSuccessors(currentNode)[branch][0]
+            branch = len(successors) - 1 
+            while branch > 0 and usedList[successors[branch][0]] != 0:
+                branch -= 1
+
+            if len(successors) > 0:
+                currentDirection = successors[branch][1]
+                currentNode = successors[branch][0]
+
+            #print "Chose", currentNode
 
             # Backtracks through the fringe if all branches have already been selected
             if usedList[currentNode] != 0:
@@ -117,6 +130,7 @@ def depthFirstSearch(problem):
             else:
                 path.push(currentDirection)
                 if problem.isGoalState(currentNode):
+                    print "PATH LENGTH", len(path)
                     return path.list 
                 usedList[currentNode] = 1
                 fringe.push(currentNode)
@@ -126,30 +140,29 @@ def breadthFirstSearch(problem):
     from game import Directions
     usedList = util.Counter()
     fringe = util.Queue()
-    path = util.Stack()
+    path = {}
     
     # First checks to see if the initial state is a goal state. If it is, return that state
     if problem.isGoalState(problem.getStartState()):
         return problem.getStartState()
     # If the initial state is not a goal state, begin iterating through the tree
     else:
+        # Initializing start state on the fringe
         fringe.push(problem.getStartState())
         usedList[fringe.peek()] = 1
+        path[fringe.peek()] = []
         while not fringe.isEmpty():
-            print "FRINGE", fringe
-            print "USED", usedList
-
             tempNode = fringe.pop()
-            print "Removing", tempNode
+            # Iterate through the successors of the node removed from the queue
             successors = problem.getSuccessors(tempNode)
             for successor in successors:
                 if usedList[successor[0]] == 0:
-                    print "Adding", successor[0]
+                    # Adds a new dictionary entry which gives the path to this node
+                    path[successor[0]] = path[tempNode] + [successor[1]]
                     usedList[successor[0]] = 1
                     fringe.push(successor[0])
                     if problem.isGoalState(successor[0]):
-                            print "Found goal at", successor[0]
-                            return path.list
+                            return path[successor[0]]
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
