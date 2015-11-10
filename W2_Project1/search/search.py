@@ -90,11 +90,7 @@ def depthFirstSearch(problem):
     usedList = util.Counter()
     fringe = util.Stack()
     path = util.Stack()
-    
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    expansions = { }
 
     # First checks to see if the initial state is a goal state. If it is, return that state
     if problem.isGoalState(problem.getStartState()):
@@ -104,35 +100,36 @@ def depthFirstSearch(problem):
         fringe.push(problem.getStartState())
         while not fringe.isEmpty():
             currentNode = fringe.peek()
-            successors = problem.getSuccessors(currentNode)
-            usedList[currentNode] = 1
 
-            #print "Current Node", currentNode
-            #print "Successors", problem.getSuccessors(currentNode)
+            # Gets the expansion for a node. Already created expansions are reused
+            if usedList[currentNode] == 0:
+                successors = problem.getSuccessors(currentNode)
+                expansions[currentNode] = successors
+                usedList[currentNode] = 1
+            else:
+                successors = expansions[currentNode]
 
-            # Selects the next available branch and the direction used to reach that branch
+            # Selects the next available branch
             branch = len(successors) - 1 
             while branch > 0 and usedList[successors[branch][0]] != 0:
                 branch -= 1
 
+            # Save new branch and direction taken to get there
             if len(successors) > 0:
                 currentDirection = successors[branch][1]
                 currentNode = successors[branch][0]
-
-            #print "Chose", currentNode
 
             # Backtracks through the fringe if all branches have already been selected
             if usedList[currentNode] != 0:
                 fringe.pop()
                 path.pop()
+
             # If the branch is unused, save the direction and push it onto the fringe.
             # Return the path if this branch is a goal state
             else:
                 path.push(currentDirection)
                 if problem.isGoalState(currentNode):
-                    print "PATH LENGTH", len(path)
                     return path.list 
-                usedList[currentNode] = 1
                 fringe.push(currentNode)
 
 def breadthFirstSearch(problem):
