@@ -149,16 +149,19 @@ def breadthFirstSearch(problem):
         usedList[fringe.peek()] = 1
         path[fringe.peek()] = []
         while not fringe.isEmpty():
-            tempNode = fringe.pop()
+            currentNode = fringe.pop()
             # Iterate through the successors of the node removed from the queue
-            successors = problem.getSuccessors(tempNode)
+            # print "EXPANDING", tempNode 
+            successors = problem.getSuccessors(currentNode)
+            print "Successors of", currentNode, "are", successors
             for successor in successors:
                 if usedList[successor[0]] == 0:
                     # Adds a new dictionary entry which gives the path to this node
-                    path[successor[0]] = path[tempNode] + [successor[1]]
+                    path[successor[0]] = path[currentNode] + [successor[1]]
                     usedList[successor[0]] = 1
                     fringe.push(successor[0])
                     if problem.isGoalState(successor[0]):
+                            print "FINAL PATH", path[successor[0]]
                             return path[successor[0]]
 
 def uniformCostSearch(problem):
