@@ -134,7 +134,6 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    from game import Directions
     usedList = util.Counter()
     fringe = util.Queue()
     path = {}
@@ -148,21 +147,21 @@ def breadthFirstSearch(problem):
         fringe.push(problem.getStartState())
         usedList[fringe.peek()] = 1
         path[fringe.peek()] = []
+
         while not fringe.isEmpty():
+            # Check node for goal state when it's removed
             currentNode = fringe.pop()
-            # Iterate through the successors of the node removed from the queue
-            # print "EXPANDING", tempNode 
+            if problem.isGoalState(currentNode):
+                return path[currentNode]
+
+            # Add the removed node's successors to the fringe
             successors = problem.getSuccessors(currentNode)
-            print "Successors of", currentNode, "are", successors
             for successor in successors:
                 if usedList[successor[0]] == 0:
                     # Adds a new dictionary entry which gives the path to this node
                     path[successor[0]] = path[currentNode] + [successor[1]]
                     usedList[successor[0]] = 1
                     fringe.push(successor[0])
-                    if problem.isGoalState(successor[0]):
-                            print "FINAL PATH", path[successor[0]]
-                            return path[successor[0]]
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
