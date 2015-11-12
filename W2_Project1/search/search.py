@@ -165,8 +165,36 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    usedList = util.Counter()
+    fringe = util.PriorityQueue()
+    path = {}
+    
+    # First checks to see if the initial state is a goal state. If it is, return that state
+    if problem.isGoalState(problem.getStartState()):
+        return problem.getStartState()
+    # If the initial state is not a goal state, begin iterating through the tree
+    else:
+        # Initializing start state on the fringe
+        fringe.push(problem.getStartState(), 0)
+        usedList[problem.getStartState()] = 1
+        path[problem.getStartState()] = []
+
+        while not fringe.isEmpty():
+            # Check node for goal state when it's removed
+            currentNode = fringe.pop()
+            usedList[currentNode] = 1
+            if problem.isGoalState(currentNode):
+                return path[currentNode]
+
+            # Add the removed node's successors to the fringe
+            successors = problem.getSuccessors(currentNode)
+            print currentNode, "has successors", successors
+            for successor in successors:
+                if usedList[successor[0]] == 0:
+                    # Adds a new dictionary entry which gives the path to this node
+                    path[successor[0]] = path[currentNode] + [successor[1]]
+                    # print "TEST", successor
+                    fringe.push(successor[0], problem.getCostOfActions(path[successor[0]]))
 
 def nullHeuristic(state, problem=None):
     """
