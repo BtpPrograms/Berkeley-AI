@@ -206,6 +206,10 @@ class PriorityQueue:
         #  (_, item) = heapq.heappop(self.heap)
         return item
 
+    # Prints n elements starting from the lowest value in the heap
+    def peek(self, n):
+        return heapq.nsmallest(n, self.heap)
+
     def isEmpty(self):
         return len(self.heap) == 0
 

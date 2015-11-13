@@ -181,20 +181,24 @@ def uniformCostSearch(problem):
 
         while not fringe.isEmpty():
             # Check node for goal state when it's removed
+            print "FRINGE", fringe.peek(3)
             currentNode = fringe.pop()
+            print currentNode, "was selected"
             usedList[currentNode] = 1
             if problem.isGoalState(currentNode):
                 return path[currentNode]
 
             # Add the removed node's successors to the fringe
             successors = problem.getSuccessors(currentNode)
-            print currentNode, "has successors", successors
+            # print currentNode, "has successors", successors
             for successor in successors:
                 if usedList[successor[0]] == 0:
                     # Adds a new dictionary entry which gives the path to this node
                     path[successor[0]] = path[currentNode] + [successor[1]]
                     # print "TEST", successor
                     fringe.push(successor[0], problem.getCostOfActions(path[successor[0]]))
+                    print "Path = ", path[successor[0]]
+                    print "Pushed", successor[0], "with cost of", problem.getCostOfActions(path[successor[0]])
 
 def nullHeuristic(state, problem=None):
     """
