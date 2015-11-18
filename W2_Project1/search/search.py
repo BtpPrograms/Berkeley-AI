@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+
 
 class SearchProblem:
     """
@@ -70,7 +71,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -86,11 +88,10 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    from game import Directions
     usedList = util.Counter()
     fringe = util.Stack()
     path = util.Stack()
-    expansions = { }
+    expansions = {}
 
     # First checks to see if the initial state is a goal state. If it is, return that state
     if problem.isGoalState(problem.getStartState()):
@@ -110,7 +111,7 @@ def depthFirstSearch(problem):
                 successors = expansions[currentNode]
 
             # Selects the next available branch
-            branch = len(successors) - 1 
+            branch = len(successors) - 1
             while branch > 0 and usedList[successors[branch][0]] != 0:
                 branch -= 1
 
@@ -129,15 +130,16 @@ def depthFirstSearch(problem):
             else:
                 path.push(currentDirection)
                 if problem.isGoalState(currentNode):
-                    return path.list 
+                    return path.list
                 fringe.push(currentNode)
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     usedList = util.Counter()
     fringe = util.Queue()
     path = {}
-    
+
     # First checks to see if the initial state is a goal state. If it is, return that state
     if problem.isGoalState(problem.getStartState()):
         return problem.getStartState()
@@ -163,13 +165,14 @@ def breadthFirstSearch(problem):
                     usedList[successor[0]] = 1
                     fringe.push(successor[0])
 
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     usedList = util.Counter()
     fringe = util.PriorityQueue()
     path = {}
-    
-    # First checks to see if the initial state is a goal state. If it is, return that state
+
+    # If the initial state is the goal then return it
     if problem.isGoalState(problem.getStartState()):
         return problem.getStartState()
     # If the initial state is not a goal state, begin iterating through the tree
@@ -181,24 +184,29 @@ def uniformCostSearch(problem):
 
         while not fringe.isEmpty():
             # Check node for goal state when it's removed
-            print "FRINGE", fringe.peek(3)
+            # print  "FRINGE", fringe.peek(3)
             currentNode = fringe.pop()
-            print currentNode, "was selected"
-            usedList[currentNode] = 1
+            # print currentNode, "was selected"
             if problem.isGoalState(currentNode):
+                # print "FINAL PATH", "for", currentNode, "is", path[currentNode]
                 return path[currentNode]
 
             # Add the removed node's successors to the fringe
             successors = problem.getSuccessors(currentNode)
+            print "Expanding", currentNode
+
             # print currentNode, "has successors", successors
             for successor in successors:
                 if usedList[successor[0]] == 0:
+                    usedList[successor[0]] = 1
                     # Adds a new dictionary entry which gives the path to this node
                     path[successor[0]] = path[currentNode] + [successor[1]]
+                    # print "Path for", successor[0], "is", path[successor[0]]
                     # print "TEST", successor
                     fringe.push(successor[0], problem.getCostOfActions(path[successor[0]]))
-                    print "Path = ", path[successor[0]]
-                    print "Pushed", successor[0], "with cost of", problem.getCostOfActions(path[successor[0]])
+                    # print "Path = ", path[successor[0]]
+                    # print "Pushed", successor[0], "with cost of", problem.getCostOfActions(path[successor[0]])
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -206,6 +214,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
