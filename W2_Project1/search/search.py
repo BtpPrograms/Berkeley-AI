@@ -170,8 +170,8 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     usedList = util.Counter()
     fringe = util.PriorityQueue()
-    fringeSize = 0
     path = {}
+    cost = {}
 
     # If the initial state is the goal then return it
     if problem.isGoalState(problem.getStartState()):
@@ -182,13 +182,14 @@ def uniformCostSearch(problem):
         fringe.push(problem.getStartState(), 0)
         usedList[problem.getStartState()] = 1
         path[problem.getStartState()] = []
+        cost[problem.getStartState()] = 0
+        # print problem.getStartState(), "has a cost of", cost[problem.getStartState()]
 
         while not fringe.isEmpty():
             # Check node for goal state when it's removed
             # print  "FRINGE", fringe.peek(3)
             currentNode = fringe.pop()
-            fringeSize -= 1
-            print "Selected", currentNode
+            # print "Selected", currentNode
             if problem.isGoalState(currentNode):
                 return path[currentNode]
 
@@ -198,12 +199,14 @@ def uniformCostSearch(problem):
             # print currentNode, "has successors", successors
             for successor in successors:
                 path[successor[0]] = path[currentNode] + [successor[1]]
+                cost[successor[0]] = cost[currentNode] + successor[2]
+                if successor[0] == 'C':
+                    print path[successor[0]]
+                    print cost[successor[0]]
                 # Adds a new dictionary entry which gives the path to this node
                 if usedList[successor[0]] == 0:
-                    fringe.push(successor[0], problem.getCostOfActions(path[successor[0]]))
-                    fringeSize += 1
+                    fringe.push(successor[0], cost[successor[0]])
                     usedList[successor[0]] = 1
-            # print "OPTIONS", fringe.peek(fringeSize)
 
 
 def nullHeuristic(state, problem=None):
