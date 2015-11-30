@@ -180,33 +180,30 @@ def uniformCostSearch(problem):
     else:
         # Initializing start state on the fringe
         fringe.push(problem.getStartState(), 0)
-        usedList[problem.getStartState()] = 1
         path[problem.getStartState()] = []
         cost[problem.getStartState()] = 0
-        # print problem.getStartState(), "has a cost of", cost[problem.getStartState()]
 
         while not fringe.isEmpty():
-            # Check node for goal state when it's removed
-            # print  "FRINGE", fringe.peek(3)
+
+            # Pops nodes from the fringe until one is found which hasn't been expanded
             currentNode = fringe.pop()
-            # print "Selected", currentNode
+            while usedList[currentNode] == 1:
+                currentNode = fringe.pop()
+
             if problem.isGoalState(currentNode):
                 return path[currentNode]
 
             # Add the removed node's successors to the fringe
             successors = problem.getSuccessors(currentNode)
+            usedList[currentNode] = 1
 
-            # print currentNode, "has successors", successors
             for successor in successors:
-                path[successor[0]] = path[currentNode] + [successor[1]]
-                cost[successor[0]] = cost[currentNode] + successor[2]
-                if successor[0] == 'C':
-                    print path[successor[0]]
-                    print cost[successor[0]]
+                # Sets cost and path if new element has lower cost than previous versions of that element
+                if cost.get(successor[0]) == None or successor[2] < cost[successor[0]]:
+                    path[successor[0]] = path[currentNode] + [successor[1]]
+                    cost[successor[0]] = cost[currentNode] + successor[2]
                 # Adds a new dictionary entry which gives the path to this node
-                if usedList[successor[0]] == 0:
-                    fringe.push(successor[0], cost[successor[0]])
-                    usedList[successor[0]] = 1
+                fringe.push(successor[0], cost[successor[0]])
 
 
 def nullHeuristic(state, problem=None):
