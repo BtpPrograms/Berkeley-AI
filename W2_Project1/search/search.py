@@ -216,8 +216,44 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    usedList = util.Counter()
+    fringe = util.PriorityQueue()
+    path = {}
+    cost = {}
+
+    # If the initial state is the goal then return it
+    if problem.isGoalState(problem.getStartState()):
+        return problem.getStartState()
+    # If the initial state is not a goal state, begin iterating through the tree
+    else:
+        # Initializing start state on the fringe
+        fringe.push(problem.getStartState(), 0)
+        path[problem.getStartState()] = []
+        cost[problem.getStartState()] = 0
+
+        while not fringe.isEmpty():
+
+            # Pops nodes from the fringe until one is found which hasn't been expanded
+            currentNode = fringe.pop()
+            while usedList[currentNode] == 1:
+                currentNode = fringe.pop()
+
+            if problem.isGoalState(currentNode):
+                return path[currentNode]
+
+            # Add the removed node's successors to the fringe
+            successors = problem.getSuccessors(currentNode)
+            usedList[currentNode] = 1
+
+            for successor in successors:
+                # Sets cost and path if new element has lower cost than previous versions of that element
+                if cost.get(successor[0]) == None or successor[2] < cost[successor[0]]:
+                    path[successor[0]] = path[currentNode] + [successor[1]]
+                    # Cost is the cost of the path to reach the current node plus the current heuristic
+                    cost[successor[0]] = cost[currentNode] + successor[2] + heuristic(successor[0], problem)
+                    cost[successor[0]] -= heuristic(currentNode, problem)
+                # Adds a new dictionary entry which gives the path to this node
+                fringe.push(successor[0], cost[successor[0]])
 
 
 # Abbreviations
