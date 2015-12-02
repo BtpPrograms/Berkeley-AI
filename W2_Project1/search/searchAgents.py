@@ -318,6 +318,7 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
 
+        print "GOALSTATE?", self.cornersUsed
         if self.cornersUsed == 4:
             return True
         return False
@@ -337,16 +338,26 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            print "STATE", state[0]
-            x, y = state[0]
+            print "STATE", state
+            if len(state) > 2:
+                x, y = state[0]
+            else:
+                x, y = state
+
+            for corner in self.corners:
+                if corner == (x, y):
+                    print corner, "used"
+
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
 
             if not hitsWall:
+                print "Appending", (nextx, nexty), "with direction", action
                 successors.append(((nextx, nexty), action, 1))
 
         self._expanded += 1  # DO NOT CHANGE
+        print "SUCESSORS", successors
         return successors
 
     def getCostOfActions(self, actions):
@@ -354,6 +365,7 @@ class CornersProblem(search.SearchProblem):
         Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999.  This is implemented for you.
         """
+        print "IS GETCOSTOFACTIONS BEING USED???"
         if actions is None:
             return 999999
         x, y = self.startingPosition
@@ -380,9 +392,13 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners  # These are the corner coordinates
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
+    lowestDistance = False
+    for corner in corners:
+        distance = manhattanHeuristic(corner, problem)
+        if lowestDistance is False or distance < lowestDistance:
+            lowestDistance = distance
 
-    "*** YOUR CODE HERE ***"
-    return 0  # Default to trivial solution
+    return distance  # Default to trivial solution
 
 
 class AStarCornersAgent(SearchAgent):
