@@ -317,9 +317,21 @@ class CornersProblem(search.SearchProblem):
         """
         Returns whether this search state is a goal state of the problem.
         """
+        print "STATE", state
+        if len(state) > 2:
+            x, y = state[0]
+        else:
+            x, y = state
 
-        print "GOALSTATE?", self.cornersUsed
+        for corner in self.corners:
+            if corner == (x, y):
+                print corner, "used with match at", (x, y)
+                self.cornersUsed += 1
+                print "Corners Used:", self.cornersUsed
+
+        print "Checking for goal"
         if self.cornersUsed == 4:
+            print "GOALLLLLLLLLLLLLL!!!!!!!!!"
             return True
         return False
 
@@ -334,30 +346,24 @@ class CornersProblem(search.SearchProblem):
             is the incremental cost of expanding to that successor
         """
 
+        print "STATE", state
+        if len(state) > 2:
+            x, y = state[0]
+        else:
+            x, y = state
+
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            print "STATE", state
-            if len(state) > 2:
-                x, y = state[0]
-            else:
-                x, y = state
-
-            for corner in self.corners:
-                if corner == (x, y):
-                    print corner, "used"
-
-            dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
-            hitsWall = self.walls[nextx][nexty]
+                dx, dy = Actions.directionToVector(action)
+                nextx, nexty = int(x + dx), int(y + dy)
+                hitsWall = self.walls[nextx][nexty]
 
             if not hitsWall:
                 print "Appending", (nextx, nexty), "with direction", action
                 successors.append(((nextx, nexty), action, 1))
 
         self._expanded += 1  # DO NOT CHANGE
-        print "SUCESSORS", successors
+        print "SUCCESSORS", successors, "with corners used:", self.cornersUsed
         return successors
 
     def getCostOfActions(self, actions):
