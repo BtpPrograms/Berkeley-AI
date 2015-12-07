@@ -317,7 +317,6 @@ class CornersProblem(search.SearchProblem):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        print "STATE", state
         if len(state) > 2:
             x, y = state[0]
         else:
@@ -329,8 +328,7 @@ class CornersProblem(search.SearchProblem):
                 self.cornersUsed += 1
                 print "Corners Used:", self.cornersUsed
 
-        print "Checking for goal"
-        if self.cornersUsed == 4:
+        if self.cornersUsed == 3:
             print "GOALLLLLLLLLLLLLL!!!!!!!!!"
             return True
         return False
@@ -354,9 +352,10 @@ class CornersProblem(search.SearchProblem):
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-                dx, dy = Actions.directionToVector(action)
-                nextx, nexty = int(x + dx), int(y + dy)
-                hitsWall = self.walls[nextx][nexty]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            print action, "hits wall:", hitsWall
 
             if not hitsWall:
                 print "Appending", (nextx, nexty), "with direction", action
@@ -371,7 +370,6 @@ class CornersProblem(search.SearchProblem):
         Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999.  This is implemented for you.
         """
-        print "IS GETCOSTOFACTIONS BEING USED???"
         if actions is None:
             return 999999
         x, y = self.startingPosition
