@@ -138,32 +138,33 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     usedList = util.Counter()
     fringe = util.Queue()
-    path = {}
 
-    # First checks to see if the initial state is a goal state. If it is, return that state
-    if problem.isGoalState(problem.getStartState()):
-        return problem.getStartState()
-    # If the initial state is not a goal state, begin iterating through the tree
-    else:
-        # Initializing start state on the fringe
-        fringe.push(problem.getStartState())
-        usedList[fringe.peek()] = 1
-        path[fringe.peek()] = []
 
-        while not fringe.isEmpty():
-            # Check node for goal state when it's removed
-            currentNode = fringe.pop()
-            if problem.isGoalState(currentNode):
-                return path[currentNode]
+    # Initializing start state on the fringe
+    fringe.push((problem.getStartState(), []))
+    position = problem.getStartState()
+    while not all(position):
+        position = position[0]
+    usedList[position] = 1
 
-            # Add the removed node's successors to the fringe
-            successors = problem.getSuccessors(currentNode)
-            for successor in successors:
-                if usedList[successor[0]] == 0:
-                    # Adds a new dictionary entry which gives the path to this node
-                    path[successor[0]] = path[currentNode] + [successor[1]]
-                    usedList[successor[0]] = 1
-                    fringe.push(successor[0])
+    while not fringe.isEmpty():
+        # Check node for goal state when it's removed
+        currentNode = fringe.pop()
+        position, actions = currentNode
+
+        if problem.isGoalState(position):
+            # print "Reached goal at", position, "with", actions
+            return actions
+
+        # Add the removed node's successors to the fringe
+        # print "GETTING SUCCESORS AT", position
+        successors = problem.getSuccessors(position)
+        for successor in successors:
+            successorPosition, successorDirection, successorActions = successor
+            if usedList[successorPosition] == 0:
+                usedList[successorPosition] = 1
+                fringe.push((successorPosition, actions + [successorDirection]))
+                # print "Added", successorPosition
 
 
 def uniformCostSearch(problem):
