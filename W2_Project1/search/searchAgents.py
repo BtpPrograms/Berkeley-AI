@@ -294,6 +294,7 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
+        self.goal = ()
         self.corners = ((1, 1), (1, top), (right, 1), (right, top))
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
@@ -302,34 +303,30 @@ class CornersProblem(search.SearchProblem):
         self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
-        self.cornersUsed = 0
-        self.startState = (self.startingPosition, self.corners, self.cornersUsed)
+        self.x, self.y = self.startingPosition
 
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-
-        return self.startState
+        visitedCorners = []
+        if self.startingPosition in self.corners:
+            visitedCorners.append(self.startingPosition)
+        return (self.startingPosition, tuple(visitedCorners))
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        if len(state) > 2:
-            x, y = state[0]
-        else:
-            x, y = state
 
-        for corner in self.corners:
-            if corner == (x, y):
-                print corner, "used with match at", (x, y)
-                self.cornersUsed += 1
-                print "Corners Used:", self.cornersUsed
+        visitedCorners = list(state[1])
 
-        if self.cornersUsed == 3:
-            print "GOALLLLLLLLLLLLLL!!!!!!!!!"
+        if state[0] in self.corners and state[0] not in visitedCorners:
+            # print "CORNER", state[0]
+            visitedCorners.append(state[0])
+
+        if len(visitedCorners) == 4:
             return True
         return False
 
@@ -344,25 +341,31 @@ class CornersProblem(search.SearchProblem):
             is the incremental cost of expanding to that successor
         """
 
-        print "STATE", state
-        if len(state) > 2:
-            x, y = state[0]
-        else:
-            x, y = state
+        # print "STATE", state
+        self.x, self.y = state[0]
+        visitedCorners = list(state[1])
+
+
+        if state[0] in self.corners and state[0] not in visitedCorners:
+            print "CORNER", state[0]
+            visitedCorners.append(state[0])
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
+            nextx, nexty = int(self.x + dx), int(self.y + dy)
             hitsWall = self.walls[nextx][nexty]
-            print action, "hits wall:", hitsWall
 
             if not hitsWall:
-                print "Appending", (nextx, nexty), "with direction", action
-                successors.append(((nextx, nexty), action, 1))
+                tempVisitedCorners = tuple(visitedCorners)
+                #if (nextx, nexty) in self.corners and (nextx, nexty) not in tempVisitedCorners:
+                #    tempVisitedCorners = tempVisitedCorners + (nextx, nexty)
+                #    print (nextx, nexty), "is a corner with", tempVisitedCorners
+                successors.append((((nextx, nexty), tempVisitedCorners), action, 0))
+
 
         self._expanded += 1  # DO NOT CHANGE
-        print "SUCCESSORS", successors, "with corners used:", self.cornersUsed
+        # print successors
         return successors
 
     def getCostOfActions(self, actions):
@@ -397,12 +400,20 @@ def cornersHeuristic(state, problem):
     corners = problem.corners  # These are the corner coordinates
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
     lowestDistance = False
+    distance = 0
     for corner in corners:
+        problem.goal = corner
         distance = manhattanHeuristic(corner, problem)
         if lowestDistance is False or distance < lowestDistance:
             lowestDistance = distance
 
-    return distance  # Default to trivial solution
+    #return distance  # Default to trivial solution
+    #print state
+
+
+    if state[0] in corners and state[0] not in state[1]:
+        return 3 -len(state[1])
+    return 4 - len(state[1])
 
 
 class AStarCornersAgent(SearchAgent):
