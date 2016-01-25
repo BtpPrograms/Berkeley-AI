@@ -347,7 +347,7 @@ class CornersProblem(search.SearchProblem):
 
 
         if state[0] in self.corners and state[0] not in visitedCorners:
-            print "CORNER", state[0]
+            #print "CORNER", state[0]
             visitedCorners.append(state[0])
 
         successors = []
@@ -399,17 +399,6 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners  # These are the corner coordinates
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
-    lowestDistance = False
-    distance = 0
-    for corner in corners:
-        problem.goal = corner
-        distance = manhattanHeuristic(corner, problem)
-        if lowestDistance is False or distance < lowestDistance:
-            lowestDistance = distance
-
-    #return distance  # Default to trivial solution
-    #print state
-
 
     if state[0] in corners and state[0] not in state[1]:
         return 3 -len(state[1])
@@ -509,10 +498,21 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
 
+    position, foodGrid = state
+    x, y = position
+    foodList = foodGrid.asList()
+    distance = 0
+    for foodX, foodY in foodList:
+        lowestDistance = False
+        foodDistance = abs(x - foodX) + abs(y - foodY)
+        distance = distance + foodDistance
+        if lowestDistance is False or foodDistance < lowestDistance:
+            lowestDistance = foodDistance
+
+    if len(foodList) > 0:
+        return distance/len(foodList)
+    return distance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
