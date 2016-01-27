@@ -503,15 +503,17 @@ def foodHeuristic(state, problem):
     x, y = position
     foodList = foodGrid.asList()
     distance = 0
+    print position
     for foodX, foodY in foodList:
-        lowestDistance = False
         foodDistance = abs(x - foodX) + abs(y - foodY)
-        distance = distance + foodDistance
-        if lowestDistance is False or foodDistance < lowestDistance:
-            lowestDistance = foodDistance
+        if foodDistance > distance:
+            distance = foodDistance
+        for searchX, searchY in foodList:
+            if (searchX, searchY) is not (foodX, foodY):
+                foodDistance = abs(searchX - foodX) + abs(searchY - foodY)
+                if foodDistance > distance:
+                    distance = foodDistance
 
-    if len(foodList) > 0:
-        return distance/len(foodList)
     return distance
 
 class ClosestDotSearchAgent(SearchAgent):
